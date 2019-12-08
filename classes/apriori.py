@@ -22,7 +22,7 @@ def scanD(D, Ck, minSupport):
     for tid in D:
         for can in Ck:
             if can.issubset(tid):
-                if not ssCnt.has_key(can):
+                if not can in ssCnt:
                     ssCnt[can] = 1
                 else:
                     ssCnt[can] += 1
@@ -52,6 +52,7 @@ def aprioriGen(Lk, k):  # creates Ck
 
 def apriori(dataSet, minSupport=0.5):
     C1 = createC1(dataSet)
+    # [list(map(str, walk)) for walk in walks]
     D = map(set, dataSet)
     L1, supportData = scanD(D, C1, minSupport)
     L = [L1]
