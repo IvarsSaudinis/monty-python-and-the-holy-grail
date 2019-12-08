@@ -5,65 +5,70 @@ def loadDataSet():
     return [[1, 3, 4], [2, 3, 5], [1, 2, 3, 5], [2, 5]]
 
 
-def createC1(dataSet):
-    C1 = []
-    for transaction in dataSet:
+def createC1(dataset):
+    "Create a list of candidate item sets of size one."
+    c1 = []
+    for transaction in dataset:
         for item in transaction:
-            if not [item] in C1:
-                C1.append([item])
+            if not [item] in c1:
+                c1.append([item])
+    c1.sort()
+    #frozenset because it will be a ket of a dictionary.
+    return map(frozenset, c1)
 
-    C1.sort()
-    return map(frozenset, C1)  # use frozen set so we
-    # can use it as a key in a dict
 
-
-def scanD(D, Ck, minSupport):
-    ssCnt = {}
-    for tid in D:
-        for can in Ck:
+def scanD(dataset, candidates, min_support):
+    "Returns all candidates that meets a minimum support level"
+    sscnt = {}
+    for tid in dataset:
+        for can in candidates:
             if can.issubset(tid):
-                if not can in ssCnt:
-                    ssCnt[can] = 1
-                else:
-                    ssCnt[can] += 1
-    numItems = float(len(D))
-    retList = []
-    supportData = {}
-    for key in ssCnt:
-        support = ssCnt[key] / numItems
-        if support >= minSupport:
-            retList.insert(0, key)
-        supportData[key] = support
-    return retList, supportData
+                sscnt.setdefault(can, 0)
+                sscnt[can] += 1
 
-def aprioriGen(Lk, k):  # creates Ck
+    num_items = float(len(dataset))
+    retlist = []
+    support_data = {}
+    for key in sscnt:
+        support = sscnt[key] / num_items
+        if support >= min_support:
+            retlist.insert(0, key)
+        support_data[key] = support
+    return retlist, support_data
+
+
+def aprioriGen(freq_sets, k):
+    "Generate the joint transactions from candidate sets"
     retList = []
-    lenLk = len(Lk)
+    lenLk = len(freq_sets)
     for i in range(lenLk):
         for j in range(i + 1, lenLk):
-            L1 = list(Lk[i])[:k - 2];
-            L2 = list(Lk[j])[:k - 2]
-            L1.sort();
+            L1 = list(freq_sets[i])[:k - 2]
+            L2 = list(freq_sets[j])[:k - 2]
+            L1.sort()
             L2.sort()
-            if L1 == L2:  # if first k-2 elements are equal
-                retList.append(Lk[i] | Lk[j])  # set union
+            if L1 == L2:
+                retList.append(freq_sets[i] | freq_sets[j])
     return retList
 
 
-def apriori(dataSet, minSupport=0.5):
-    C1 = createC1(dataSet)
-    # [list(map(str, walk)) for walk in walks]
-    D = map(set, dataSet)
-    L1, supportData = scanD(D, C1, minSupport)
+def apriori(dataset, minsupport=0.5):
+    "Generate a list of candidate item sets"
+    C1 = createC1(dataset)
+    D = map(set, dataset)
+    L1, support_data = scanD(D, C1, minsupport)
     L = [L1]
     k = 2
     while (len(L[k - 2]) > 0):
         Ck = aprioriGen(L[k - 2], k)
-        Lk, supK = scanD(D, Ck, minSupport)  # scan DB to get Lk
-        supportData.update(supK)
+        Lk, supK = scanD(D, Ck, minsupport)
+        support_data.update(supK)
         L.append(Lk)
         k += 1
-    return L, supportData
+
+    return L, support_data
+
+
 
 def generateRules(L, supportData, minConf=0.7):  # supportData is a dict coming from scanD
     bigRuleList = []
