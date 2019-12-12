@@ -50,6 +50,28 @@ Izmantojot mācību grāmatas 4.nodaļas piemērus, izveidot Python programmu, k
  Pārveidot 11.nodaļas kongresa vēlēšanu piemēru par Python3 programmuā
 ```
 
+Kaut arī votesmart tika piedāvāta biblioteka python3 versijai un veiksmīgi izdevās uzstādīt, neizdevās iegūt API atslēgu
+
+```
+Thank you for your interest in the Vote Smart API. You indicated on your registration form that you are a member; however, we don't have record of your membership in our database.
+
+In order to complete your application, you will need to review our subscription types (found here:
+
+http://votesmart.org/share/api/register) and select the one that is most appropriate for you. If you are unsure of which subscription level to choose, please give our office a call at 515-989-6363, or email me back, and we can discuss this further.
+
+Please let me know if you have any questions.
+Best Wishes,
+
+Jacob Petterson
+
+
+--
+Jacob Petterson
+Development Director, Vote Smart
+1153 24th Street
+Des Moines, IA 50311
+515-989-6363
+```
 
 ### 8. uzdevums - 08.py
 ```text
